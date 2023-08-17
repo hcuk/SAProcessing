@@ -19,9 +19,12 @@
  */
 
 using AutoMapper;
+using AutoMapper.Mappers;
 using SAP.DataModel;
 using SAP.Interfaces.Dtos;
-using AutoMapper.Mappers;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace SAP.Map
 {
@@ -35,70 +38,58 @@ namespace SAP.Map
         /// </summary>
         public static void Setup()
         {
-            var useless = new ListSourceMapper();//call something in AutoMapper.Net4.dll so that it is included in the publish of API 
-
-            #region "data model to dto"
-            Mapper.CreateMap<sentiment_batch, ISentimentBatchDto>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
-                .ForMember(dest => dest.BatchLimit, src => src.MapFrom(p => p.batch_limit))
-                .ForMember(dest => dest.BatchSize, src => src.MapFrom(p => p.batch_size))
-                .ForMember(dest => dest.DateStart, src => src.MapFrom(p => p.date_start))
-                .ForMember(dest => dest.DateFinish, src => src.MapFrom(p => p.date_finish));
-
-            Mapper.CreateMap<sentiment_queue, ISentimentQueueDto>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
-                .ForMember(dest => dest.TextForAnalysis, src => src.MapFrom(p => p.text_for_analysis))
-                .ForMember(dest => dest.DateCreated, src => src.MapFrom(p => p.date_created))
-                .ForMember(dest => dest.BatchId, src => src.MapFrom(p => p.batch_id))
-                .ForMember(dest => dest.Processed, src => src.MapFrom(p => p.processed))
-                .ForMember(dest => dest.DateProcessed, src => src.MapFrom(p => p.date_processed))
-                .ForMember(dest => dest.Error, src => src.MapFrom(p => p.error))
-                .ForMember(dest => dest.SentimentQueueErrors, src => src.MapFrom(p => p.sentiment_queue_error));
-
-            Mapper.CreateMap<sentiment_queue_error, ISentimentQueueErrorDto>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
-                .ForMember(dest => dest.SentimentQueueId, src => src.MapFrom(p => p.sentiment_queue_id))
-                .ForMember(dest => dest.Message, src => src.MapFrom(p => p.message))
-                .ForMember(dest => dest.StackTrace, src => src.MapFrom(p => p.stacktrace))
-                .ForMember(dest => dest.DateCreated, src => src.MapFrom(p => p.date_created));
-
-            Mapper.CreateMap<sentiment, ISentimentDto>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
-                .ForMember(dest => dest.DateCreated, src => src.MapFrom(p => p.date_created))
-                .ForMember(dest => dest.AverageScore, src => src.MapFrom(p => p.average_score))
-                .ForMember(dest => dest.SentimentSentences, src => src.MapFrom(p => p.sentiment_sentences));
-
-            Mapper.CreateMap<sentiment_sentences, ISentimentSentenceDto>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
-                .ForMember(dest => dest.SentimentId, src => src.MapFrom(p => p.sentiment_id))
-                .ForMember(dest => dest.Text, src => src.MapFrom(p => p.text))
-                .ForMember(dest => dest.Score, src => src.MapFrom(p => p.score))
-                .ForMember(dest => dest.DateCreated, src => src.MapFrom(p => p.date_created)); 
-
-            #endregion
-
-            #region "dto to datamodel"
-            Mapper.CreateMap<ISentimentDto, sentiment>()
-                .ForMember(dest => dest.id, src => src.MapFrom(p => p.Id))
-                .ForMember(dest => dest.date_created, src => src.MapFrom(p => p.DateCreated))
-                .ForMember(dest => dest.average_score, src => src.MapFrom(p => p.AverageScore))
-                .ForMember(dest => dest.sentiment_sentences, src => src.MapFrom(p => p.SentimentSentences));
-
-            Mapper.CreateMap<ISentimentSentenceDto, sentiment_sentences>()
-                .ForMember(dest => dest.id, src => src.MapFrom(p => p.Id))
-                .ForMember(dest => dest.sentiment_id, src => src.MapFrom(p => p.SentimentId))
-                .ForMember(dest => dest.text, src => src.MapFrom(p => p.Text))
-                .ForMember(dest => dest.score, src => src.MapFrom(p => p.Score))
-                .ForMember(dest => dest.date_created, src => src.MapFrom(p => p.DateCreated));
-
-            Mapper.CreateMap<ISentimentQueueErrorDto, sentiment_queue_error>()
-                .ForMember(dest => dest.id, src => src.MapFrom(p => p.Id))
-                .ForMember(dest => dest.sentiment_queue_id, src => src.MapFrom(p => p.SentimentQueueId))
-                .ForMember(dest => dest.message, src => src.MapFrom(p => p.Message))
-                .ForMember(dest => dest.stacktrace, src => src.MapFrom(p => p.StackTrace))
-                .ForMember(dest => dest.date_created, src => src.MapFrom(p => p.DateCreated));
-
-            #endregion
+      ListSourceMapper listSourceMapper = new ListSourceMapper();
+      Mapper.CreateMap<sentiment_batch, ISentimentBatchDto>()
+		.ForMember((Expression<Func<ISentimentBatchDto, object>>) (dest => (object) dest.Id), (Action<IMemberConfigurationExpression<sentiment_batch>>) (src => src.MapFrom<int>((Expression<Func<sentiment_batch, int>>) (p => p.id))))
+		.ForMember((Expression<Func<ISentimentBatchDto, object>>) (dest => (object) dest.BatchLimit), (Action<IMemberConfigurationExpression<sentiment_batch>>) (src => src.MapFrom<int>((Expression<Func<sentiment_batch, int>>) (p => p.batch_limit))))
+		.ForMember((Expression<Func<ISentimentBatchDto, object>>) (dest => (object) dest.BatchSize), (Action<IMemberConfigurationExpression<sentiment_batch>>) (src => src.MapFrom<int>((Expression<Func<sentiment_batch, int>>) (p => p.batch_size))))
+		.ForMember((Expression<Func<ISentimentBatchDto, object>>) (dest => (object) dest.DateStart), (Action<IMemberConfigurationExpression<sentiment_batch>>) (src => src.MapFrom<DateTime>((Expression<Func<sentiment_batch, DateTime>>) (p => p.date_start))))
+		.ForMember((Expression<Func<ISentimentBatchDto, object>>) (dest => (object) dest.DateFinish), (Action<IMemberConfigurationExpression<sentiment_batch>>) (src => src.MapFrom<DateTime?>((Expression<Func<sentiment_batch, DateTime?>>) (p => p.date_finish))));
+      Mapper.CreateMap<sentiment_queue, ISentimentQueueDto>()
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => (object) dest.Id), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<int>((Expression<Func<sentiment_queue, int>>) (p => p.id))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => dest.TextForAnalysis), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<string>((Expression<Func<sentiment_queue, string>>) (p => p.text_for_analysis))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => (object) dest.DateCreated), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<DateTime?>((Expression<Func<sentiment_queue, DateTime?>>) (p => p.date_created))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => (object) dest.BatchId), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<int?>((Expression<Func<sentiment_queue, int?>>) (p => p.batch_id))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => (object) dest.Processed), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<bool>((Expression<Func<sentiment_queue, bool>>) (p => p.processed))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => (object) dest.DateProcessed), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<DateTime?>((Expression<Func<sentiment_queue, DateTime?>>) (p => p.date_processed))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => (object) dest.Error), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<bool?>((Expression<Func<sentiment_queue, bool?>>) (p => p.error))))
+		.ForMember((Expression<Func<ISentimentQueueDto, object>>) (dest => dest.SentimentQueueErrors), (Action<IMemberConfigurationExpression<sentiment_queue>>) (src => src.MapFrom<ICollection<sentiment_queue_error>>((Expression<Func<sentiment_queue, ICollection<sentiment_queue_error>>>) (p => p.sentiment_queue_error))));
+      Mapper.CreateMap<sentiment_queue_error, ISentimentQueueErrorDto>()
+		.ForMember((Expression<Func<ISentimentQueueErrorDto, object>>) (dest => (object) dest.Id), (Action<IMemberConfigurationExpression<sentiment_queue_error>>) (src => src.MapFrom<int>((Expression<Func<sentiment_queue_error, int>>) (p => p.id))))
+		.ForMember((Expression<Func<ISentimentQueueErrorDto, object>>) (dest => (object) dest.SentimentQueueId), (Action<IMemberConfigurationExpression<sentiment_queue_error>>) (src => src.MapFrom<int>((Expression<Func<sentiment_queue_error, int>>) (p => p.sentiment_queue_id))))
+		.ForMember((Expression<Func<ISentimentQueueErrorDto, object>>) (dest => dest.Message), (Action<IMemberConfigurationExpression<sentiment_queue_error>>) (src => src.MapFrom<string>((Expression<Func<sentiment_queue_error, string>>) (p => p.message))))
+		.ForMember((Expression<Func<ISentimentQueueErrorDto, object>>) (dest => dest.StackTrace), (Action<IMemberConfigurationExpression<sentiment_queue_error>>) (src => src.MapFrom<string>((Expression<Func<sentiment_queue_error, string>>) (p => p.stacktrace))))
+		.ForMember((Expression<Func<ISentimentQueueErrorDto, object>>) (dest => (object) dest.DateCreated), (Action<IMemberConfigurationExpression<sentiment_queue_error>>) (src => src.MapFrom<DateTime>((Expression<Func<sentiment_queue_error, DateTime>>) (p => p.date_created))));
+      Mapper.CreateMap<sentiment, ISentimentDto>()
+		.ForMember((Expression<Func<ISentimentDto, object>>) (dest => (object) dest.Id), (Action<IMemberConfigurationExpression<sentiment>>) (src => src.MapFrom<int>((Expression<Func<sentiment, int>>) (p => p.id))))
+		.ForMember((Expression<Func<ISentimentDto, object>>) (dest => (object) dest.DateCreated), (Action<IMemberConfigurationExpression<sentiment>>) (src => src.MapFrom<DateTime>((Expression<Func<sentiment, DateTime>>) (p => p.date_created))))
+		.ForMember((Expression<Func<ISentimentDto, object>>) (dest => (object) dest.AverageScore), (Action<IMemberConfigurationExpression<sentiment>>) (src => src.MapFrom<Decimal?>((Expression<Func<sentiment, Decimal?>>) (p => p.average_score))))
+		.ForMember((Expression<Func<ISentimentDto, object>>) (dest => (object) dest.SentimentQueueID), (Action<IMemberConfigurationExpression<sentiment>>) (src => src.MapFrom<int>((Expression<Func<sentiment, int>>) (p => p.sentiment_queue_id))))
+		.ForMember((Expression<Func<ISentimentDto, object>>) (dest => dest.SentimentSentences), (Action<IMemberConfigurationExpression<sentiment>>) (src => src.MapFrom<ICollection<sentiment_sentences>>((Expression<Func<sentiment, ICollection<sentiment_sentences>>>) (p => p.sentiment_sentences))));
+      Mapper.CreateMap<sentiment_sentences, ISentimentSentenceDto>()
+		.ForMember((Expression<Func<ISentimentSentenceDto, object>>) (dest => (object) dest.Id), (Action<IMemberConfigurationExpression<sentiment_sentences>>) (src => src.MapFrom<int>((Expression<Func<sentiment_sentences, int>>) (p => p.id))))
+		.ForMember((Expression<Func<ISentimentSentenceDto, object>>) (dest => (object) dest.SentimentId), (Action<IMemberConfigurationExpression<sentiment_sentences>>) (src => src.MapFrom<int>((Expression<Func<sentiment_sentences, int>>) (p => p.sentiment_id))))
+		.ForMember((Expression<Func<ISentimentSentenceDto, object>>) (dest => dest.Text), (Action<IMemberConfigurationExpression<sentiment_sentences>>) (src => src.MapFrom<string>((Expression<Func<sentiment_sentences, string>>) (p => p.text))))
+		.ForMember((Expression<Func<ISentimentSentenceDto, object>>) (dest => (object) dest.Score), (Action<IMemberConfigurationExpression<sentiment_sentences>>) (src => src.MapFrom<int>((Expression<Func<sentiment_sentences, int>>) (p => p.score))))
+		.ForMember((Expression<Func<ISentimentSentenceDto, object>>) (dest => (object) dest.DateCreated), (Action<IMemberConfigurationExpression<sentiment_sentences>>) (src => src.MapFrom<DateTime>((Expression<Func<sentiment_sentences, DateTime>>) (p => p.date_created))));
+      Mapper.CreateMap<ISentimentDto, sentiment>()
+		.ForMember((Expression<Func<sentiment, object>>) (dest => (object) dest.id), (Action<IMemberConfigurationExpression<ISentimentDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentDto, int>>) (p => p.Id))))
+		.ForMember((Expression<Func<sentiment, object>>) (dest => (object) dest.date_created), (Action<IMemberConfigurationExpression<ISentimentDto>>) (src => src.MapFrom<DateTime>((Expression<Func<ISentimentDto, DateTime>>) (p => p.DateCreated))))
+		.ForMember((Expression<Func<sentiment, object>>) (dest => (object) dest.average_score), (Action<IMemberConfigurationExpression<ISentimentDto>>) (src => src.MapFrom<Decimal?>((Expression<Func<ISentimentDto, Decimal?>>) (p => p.AverageScore))))
+		.ForMember((Expression<Func<sentiment, object>>) (dest => (object) dest.sentiment_queue_id), (Action<IMemberConfigurationExpression<ISentimentDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentDto, int>>) (p => p.SentimentQueueID))))
+		.ForMember((Expression<Func<sentiment, object>>) (dest => dest.sentiment_sentences), (Action<IMemberConfigurationExpression<ISentimentDto>>) (src => src.MapFrom<List<ISentimentSentenceDto>>((Expression<Func<ISentimentDto, List<ISentimentSentenceDto>>>) (p => p.SentimentSentences))));
+      Mapper.CreateMap<ISentimentSentenceDto, sentiment_sentences>()
+		.ForMember((Expression<Func<sentiment_sentences, object>>) (dest => (object) dest.id), (Action<IMemberConfigurationExpression<ISentimentSentenceDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentSentenceDto, int>>) (p => p.Id))))
+		.ForMember((Expression<Func<sentiment_sentences, object>>) (dest => (object) dest.sentiment_id), (Action<IMemberConfigurationExpression<ISentimentSentenceDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentSentenceDto, int>>) (p => p.SentimentId))))
+		.ForMember((Expression<Func<sentiment_sentences, object>>) (dest => dest.text), (Action<IMemberConfigurationExpression<ISentimentSentenceDto>>) (src => src.MapFrom<string>((Expression<Func<ISentimentSentenceDto, string>>) (p => p.Text))))
+		.ForMember((Expression<Func<sentiment_sentences, object>>) (dest => (object) dest.score), (Action<IMemberConfigurationExpression<ISentimentSentenceDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentSentenceDto, int>>) (p => p.Score))))
+		.ForMember((Expression<Func<sentiment_sentences, object>>) (dest => (object) dest.date_created), (Action<IMemberConfigurationExpression<ISentimentSentenceDto>>) (src => src.MapFrom<DateTime>((Expression<Func<ISentimentSentenceDto, DateTime>>) (p => p.DateCreated))));
+      Mapper.CreateMap<ISentimentQueueErrorDto, sentiment_queue_error>()
+		.ForMember((Expression<Func<sentiment_queue_error, object>>) (dest => (object) dest.id), (Action<IMemberConfigurationExpression<ISentimentQueueErrorDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentQueueErrorDto, int>>) (p => p.Id))))
+		.ForMember((Expression<Func<sentiment_queue_error, object>>) (dest => (object) dest.sentiment_queue_id), (Action<IMemberConfigurationExpression<ISentimentQueueErrorDto>>) (src => src.MapFrom<int>((Expression<Func<ISentimentQueueErrorDto, int>>) (p => p.SentimentQueueId))))
+		.ForMember((Expression<Func<sentiment_queue_error, object>>) (dest => dest.message), (Action<IMemberConfigurationExpression<ISentimentQueueErrorDto>>) (src => src.MapFrom<string>((Expression<Func<ISentimentQueueErrorDto, string>>) (p => p.Message))))
+		.ForMember((Expression<Func<sentiment_queue_error, object>>) (dest => dest.stacktrace), (Action<IMemberConfigurationExpression<ISentimentQueueErrorDto>>) (src => src.MapFrom<string>((Expression<Func<ISentimentQueueErrorDto, string>>) (p => p.StackTrace))))
+		.ForMember((Expression<Func<sentiment_queue_error, object>>) (dest => (object) dest.date_created), (Action<IMemberConfigurationExpression<ISentimentQueueErrorDto>>) (src => src.MapFrom<DateTime>((Expression<Func<ISentimentQueueErrorDto, DateTime>>) (p => p.DateCreated))));
 
         }
     }

@@ -15,12 +15,9 @@
 
     You should have received a copy of the GNU General Public License
     along with HCSentimentAnalysisProcessor.  If not, see <http://www.gnu.org/licenses/>.
-
- */
-
-
-using SAP.DataModel;
+*/
 using AutoMapper;
+using SAP.DataModel;
 using SAP.Interfaces.Dtos;
 
 namespace SAP.DataAccess
@@ -34,14 +31,14 @@ namespace SAP.DataAccess
         /// saves a sentiment and its sentences
         /// </summary>
         /// <param name="sentimentDto"></param>
-        public static void SaveSentiment(ISentimentDto sentimentDto)
-        {
-            using (var db = new SentimentEntities())
-            {
-                var sentiment = Mapper.Map(sentimentDto, new sentiment());
-                db.sentiments.Add(sentiment);
-                db.SaveChanges();
-            }
-        }   
+    public static void SaveSentiment(ISentimentDto sentimentDto)
+    {
+      using (SentimentEntities sentimentEntities = new SentimentEntities())
+      {
+        sentiment entity = Mapper.Map<ISentimentDto, sentiment>(sentimentDto, new sentiment());
+        sentimentEntities.sentiments.Add(entity);
+        sentimentEntities.SaveChanges();
+      }
     }
+  }
 }

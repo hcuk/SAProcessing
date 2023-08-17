@@ -17,61 +17,55 @@
     along with HCSentimentAnalysisProcessor.  If not, see <http://www.gnu.org/licenses/>.
 
  */
-
+using SAP.Map;
 using System;
-using System.Diagnostics;
-using System.ServiceProcess;
-using System.Timers;
 using System.Configuration;
+using System.Diagnostics;
+using System.Timers;
 
 namespace SAP.WinSvc
 {
-    partial class SentimentQueueManager : ServiceBase
+  internal class SentimentQueueManager
+  {
+    private static Timer _timer;
+
+    public SentimentQueueManager() => Mappings.Setup();
+
+    public void OnStart(string[] args)
     {
-
-        private static Timer _timer;
-
-        public SentimentQueueManager()
-        {
-            InitializeComponent();
-            Map.Mappings.Setup();
-        }
-
-        protected override void OnStart(string[] args)
-        {
-            _timer = new Timer { Interval = Convert.ToInt32(ConfigurationManager.AppSettings["timerInterval"]) };
-            _timer.Elapsed += ProcessBatch;
-            _timer.Start();
-        }
-
-        protected override void OnStop()
-        {
-            _timer.Stop();
-            _timer.Dispose();
-        }
-
-        private static void ProcessBatch(object source, ElapsedEventArgs e)
-        {
-            Trace.WriteLine("Processing Batch...");
-            _timer.Stop();
-
-            try
-            {
-                var batchLimit = Convert.ToInt32(ConfigurationManager.AppSettings["batchLimit"]);
-                var retryFailed = false;
-                if (ConfigurationManager.AppSettings["retryFailed"] != null)
-                {
-                    retryFailed = bool.Parse(ConfigurationManager.AppSettings["retryFailed"]);
-                }
-                Helper.ProcessBatch(batchLimit, retryFailed);
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(string.Format("Error processing sentiments: [{0}]", ex.ToString()));
-            }
-
-            _timer.Start();
-            Trace.WriteLine("Batch Processing Ended.");
-        }
+      SentimentQueueManager._timer = new Timer()
+      {
+        Interval = (double) Convert.ToInt32(ConfigurationManager.AppSettings["timerInterval"])
+      };
+      SentimentQueueManager._timer.Elapsed += new ElapsedEventHandler(SentimentQueueManager.ProcessBatch);
+      SentimentQueueManager._timer.Start();
     }
+
+    public void OnStop()
+    {
+      SentimentQueueManager._timer.Stop();
+      SentimentQueueManager._timer.Dispose();
+    }
+
+    private static void ProcessBatch(object source, ElapsedEventArgs e)
+    {
+      Trace.WriteLine("Processing Batch...");
+      SentimentQueueManager._timer.Stop();
+      try
+      {
+        int int32 = Convert.ToInt32(ConfigurationManager.AppSettings["batchLimit"]);
+        bool flag = false;
+        if (ConfigurationManager.AppSettings["retryFailed"] != null)
+          flag = bool.Parse(ConfigurationManager.AppSettings["retryFailed"]);
+        int num = flag ? 1 : 0;
+        Helper.ProcessBatch(int32, num != 0);
+      }
+      catch (Exception ex)
+      {
+        Trace.WriteLine(string.Format("Error processing sentiments: [{0}]", (object) ex.ToString()));
+      }
+      SentimentQueueManager._timer.Start();
+      Trace.WriteLine("Batch Processing Ended.");
+    }
+  }
 }

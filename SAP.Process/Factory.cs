@@ -31,33 +31,20 @@ namespace SAP.Process
         private static readonly Factory _current = new Factory();
         private static readonly UnityContainer _unity = new UnityContainer();
 
-        private Factory()
-        {
-        }
-        
-        public static Factory Current
-        {
-            get
-            {
-                return _current;
-            }
-        }
-
-        public void RegisterInterfaces()
-        {
-            _unity.RegisterType<IEngine, Engine>();
-            _unity.RegisterType<IAnalyser, Analyser>();
-        }
-
-        public IEngine Engine()
-        {
-            return _unity.Resolve<IEngine>();
-        }
-
-        public IAnalyser Analyse()
-        {
-            return _unity.Resolve<IAnalyser>();
-        }
-
+    private Factory()
+    {
     }
+
+    public static Factory Current => Factory._current;
+
+    public void RegisterInterfaces()
+    {
+      Factory._unity.RegisterType<IEngine, SAP.Process.Engine>();
+      Factory._unity.RegisterType<IAnalyser, Analyser>();
+    }
+
+    public IEngine Engine() => Factory._unity.Resolve<IEngine>();
+
+    public IAnalyser Analyse() => Factory._unity.Resolve<IAnalyser>();
+  }
 }

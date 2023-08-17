@@ -7,22 +7,24 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 namespace SAP.DataModel
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class sentiment
-    {
-        public sentiment()
-        {
-            this.sentiment_sentences = new HashSet<sentiment_sentences>();
-        }
-    
-        public int id { get; set; }
-        public System.DateTime date_created { get; set; }
-        public Nullable<decimal> average_score { get; set; }
-    
-        public virtual ICollection<sentiment_sentences> sentiment_sentences { get; set; }
-    }
+  public class sentiment
+  {
+    public sentiment() => this.sentiment_sentences = (ICollection<SAP.DataModel.sentiment_sentences>) new HashSet<SAP.DataModel.sentiment_sentences>();
+
+    public int id { get; set; }
+
+    public DateTime date_created { get; set; }
+
+    public Decimal? average_score { get; set; }
+
+    public int sentiment_queue_id { get; set; }
+
+    public virtual ICollection<SAP.DataModel.sentiment_sentences> sentiment_sentences { get; set; }
+
+    public virtual sentiment_queue sentiment_queue { get; set; }
+  }
 }

@@ -19,37 +19,49 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
-using System.ServiceProcess;
+using Topshelf;
+using Topshelf.HostConfigurators;
+using Topshelf.Runtime;
+using Topshelf.ServiceConfigurators;
 
 namespace SAP.WinSvc
 {
-    static class Program
+  internal static class Program
+  {
+    private static void Main(string[] args)
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main()
+      Program.Init();
+      int num = (int) HostFactory.Run((Action<HostConfigurator>) (x =>
+      {
+        x.Service<SentimentQueueManager>((Action<ServiceConfigurator<SentimentQueueManager>>) (s =>
         {
-            string logDirectory = Path.Combine(Environment.CurrentDirectory, "logs");
-
-            if(!Directory.Exists(logDirectory)) {
-                Directory.CreateDirectory(logDirectory);
-            }
-
-            System.Diagnostics.Trace.WriteLine("Starting Sentiment Service");
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new SentimentQueueManager(),  
-            };
-            ServiceBase.Run(ServicesToRun);
-        }
-
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            System.Diagnostics.Trace.WriteLine(e.ExceptionObject);
-        }
+          s.ConstructUsing((ServiceFactory<SentimentQueueManager>) (name => new SentimentQueueManager()));
+          s.WhenStarted<SentimentQueueManager>((Action<SentimentQueueManager>) (tc => tc.OnStart(args)));
+          s.WhenStopped<SentimentQueueManager>((Action<SentimentQueueManager>) (tc => tc.OnStop()));
+        }));
+        x.RunAsLocalSystem();
+        x.SetDescription("Sentiment Analysis Processor");
+        x.SetDisplayName("Sentiment Analysis Processor");
+        x.SetServiceName("Sentiment Analysis Processor");
+      }));
     }
+
+    private static void Init()
+    {
+      string path = Path.Combine(Environment.CurrentDirectory, "logs");
+      if (!Directory.Exists(path))
+        Directory.CreateDirectory(path);
+      Trace.WriteLine("Starting Sentiment Service");
+      AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(Program.CurrentDomain_UnhandledException);
+    }
+
+    private static void CurrentDomain_UnhandledException(
+      object sender,
+      UnhandledExceptionEventArgs e)
+    {
+      Trace.WriteLine(e.ExceptionObject);
+    }
+  }
 }
