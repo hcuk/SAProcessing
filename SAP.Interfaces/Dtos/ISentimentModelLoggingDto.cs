@@ -7,6 +7,6 @@ namespace SAP.Interfaces.Dtos
         int Id { get; set; }
         int SentimentModelId { get; set; }
         int SentimentTrainingId { get; set; }
-        DateTime DateCreated { get; set; }
+        DateTime DateCreated { get; st; }
     }
 }
