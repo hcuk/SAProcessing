@@ -7,28 +7,23 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 namespace SAP.DataModel
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
-    
-    public partial class SentimentEntities : DbContext
+    public class SentimentEntities : DbContext
     {
         public SentimentEntities()
             : base("name=SentimentEntities")
         {
         }
-    
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
-    
-        public virtual DbSet<sentiment_batch> sentiment_batch { get; set; }
-        public virtual DbSet<sentiment_queue> sentiment_queue { get; set; }
-        public virtual DbSet<sentiment_queue_error> sentiment_queue_error { get; set; }
-        public virtual DbSet<sentiment_sentences> sentiment_sentences { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder) => throw new UnintentionalCodeFirstException();
+
+        public virtual DbSet<SAP.DataModel.sentiment_batch> sentiment_batch { get; set; }
+        public virtual DbSet<SAP.DataModel.sentiment_queue> sentiment_queue { get; set; }
+        public virtual DbSet<SAP.DataModel.sentiment_queue_error> sentiment_queue_error { get; set; }
+        public virtual DbSet<SAP.DataModel.sentiment_sentences> sentiment_sentences { get; set; }
         public virtual DbSet<sentiment> sentiments { get; set; }
     }
 }

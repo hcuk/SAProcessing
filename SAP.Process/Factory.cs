@@ -34,30 +34,17 @@ namespace SAP.Process
         private Factory()
         {
         }
-        
-        public static Factory Current
-        {
-            get
-            {
-                return _current;
-            }
-        }
+
+        public static Factory Current => Factory._current;
 
         public void RegisterInterfaces()
         {
-            _unity.RegisterType<IEngine, Engine>();
-            _unity.RegisterType<IAnalyser, Analyser>();
+            Factory._unity.RegisterType<IEngine, SAP.Process.Engine>();
+            Factory._unity.RegisterType<IAnalyser, Analyser>();
         }
 
-        public IEngine Engine()
-        {
-            return _unity.Resolve<IEngine>();
-        }
+        public IEngine Engine() => Factory._unity.Resolve<IEngine>();
 
-        public IAnalyser Analyse()
-        {
-            return _unity.Resolve<IAnalyser>();
-        }
-
+        public IAnalyser Analyse() => Factory._unity.Resolve<IAnalyser>();
     }
 }

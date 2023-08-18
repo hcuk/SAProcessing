@@ -36,11 +36,11 @@ namespace SAP.DataAccess
         /// <param name="sentimentDto"></param>
         public static void SaveSentiment(ISentimentDto sentimentDto)
         {
-            using (var db = new SentimentEntities())
+            using (SentimentEntities sentimentEntities = new SentimentEntities())
             {
-                var sentiment = Mapper.Map(sentimentDto, new sentiment());
-                db.sentiments.Add(sentiment);
-                db.SaveChanges();
+                sentiment entity = Mapper.Map<ISentimentDto, sentiment>(sentimentDto, new sentiment());
+                sentimentEntities.sentiments.Add(entity);
+                sentimentEntities.SaveChanges();
             }
         }   
     }

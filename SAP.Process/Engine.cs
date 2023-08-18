@@ -17,12 +17,14 @@
     along with HCSentimentAnalysisProcessor.  If not, see <http://www.gnu.org/licenses/>.
 
  */
- 
+using Elmah;
+using SAP.DataAccess;
+using SAP.Interfaces;
+using SAP.Interfaces.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using SAP.Interfaces;
-using SAP.Interfaces.Dtos;
+using System.Web;
 
 namespace SAP.Process
 {
@@ -35,12 +37,12 @@ namespace SAP.Process
         {
             try
             {
-                return DataAccess.Queue.StartBatch(batchLimit, batchSize, dateStart);
+                return Queue.StartBatch(batchLimit, batchSize, dateStart);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("StartBatch exception: {0}", ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("StartBatch exception: {0}", (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Error(ex));
                 throw ex;
             }
         }
@@ -49,12 +51,12 @@ namespace SAP.Process
         {
             try
             {
-                DataAccess.Queue.FinishBatch(sentimentBatch);
+                Queue.FinishBatch(sentimentBatch);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("FinishBatch exception: {0}", ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("FinishBatch exception: {0}", (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Error(ex));
                 throw ex;
             }
         }
@@ -63,12 +65,12 @@ namespace SAP.Process
         {
             try
             {
-                return DataAccess.Queue.GetSentimentQueueForProcessing(batchSize, retryFailed);
+                return Queue.GetSentimentQueueForProcessing(batchSize, retryFailed);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("GetSentimentQueueForProcessing exception: {0}", ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("GetSentimentQueueForProcessing exception: {0}", (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Error(ex));
                 throw ex;
             }
         }
@@ -77,12 +79,12 @@ namespace SAP.Process
         {
             try
             {
-                DataAccess.Queue.SaveSentimentQueueProcessingOutcome(sentimentQueue);
+                Queue.SaveSentimentQueueProcessingOutcome(sentimentQueue);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("SaveSentimentQueueProcessingOutcome exception: {0}", ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("SaveSentimentQueueProcessingOutcome exception: {0}", (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Error(ex));
                 throw ex;
             }
         }
@@ -91,12 +93,12 @@ namespace SAP.Process
         {
             try
             {
-                DataAccess.Sentiment.SaveSentiment(sentiment);
+                Sentiment.SaveSentiment(sentiment);
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(string.Format("SaveSentiment exception: {0}", ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("SaveSentiment exception: {0}", (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Error(ex));
                 throw ex;
             }
         }

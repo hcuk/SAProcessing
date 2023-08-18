@@ -19,21 +19,23 @@
  */
 
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using java.util;
 using edu.stanford.nlp.ling;
 using edu.stanford.nlp.neural.rnn;
 using edu.stanford.nlp.pipeline;
 using edu.stanford.nlp.sentiment;
-using edu.stanford.nlp.util;
 using edu.stanford.nlp.trees;
+using Elmah;
+using java.lang;
+using java.util;
 using SAP.Dtos;
 using SAP.Interfaces;
 using SAP.Interfaces.Dtos;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.IO;
+using System.Web;
 
 namespace SAP.Process
 {
@@ -54,22 +56,18 @@ namespace SAP.Process
             try
             {
                 Trace.WriteLine("Initialising analyser...");
-
-                Properties = new Properties();
-                Properties.setProperty("annotators",
-                    "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment, parse");
-                Properties.setProperty("sutime.binders", "0");
-                
-                // We should change current directory, so StanfordCoreNLP could find all the model files automatically 
+                this.Properties = new Properties();
+                this.Properties.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment, parse");
+                this.Properties.setProperty("sutime.binders", "0");
                 Trace.WriteLine("Setting properties for Analyser...");
                 Directory.SetCurrentDirectory(sentimentModelPath);
-                Pipeline = new StanfordCoreNLP(Properties);
+                this.Pipeline = new StanfordCoreNLP(this.Properties);
                 Trace.WriteLine("Initialising analyser complete.");
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                Trace.WriteLine(string.Format("Error initialising analyser: {0}",ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("Error initialising analyser: {0}", (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Elmah.Error(ex));
                 throw;
             }
         }
@@ -83,41 +81,40 @@ namespace SAP.Process
         {
             try
             {
-                ISentimentDto sentiment = new SentimentDto {  SentimentSentences = new List<ISentimentSentenceDto>(), DateCreated = DateTime.Now };
-                decimal sentenceSum = 0;
-                decimal scoreSum = 0;
-
+                ISentimentDto sentiment = (ISentimentDto)new SentimentDto()
+                {
+                    SentimentSentences = new List<ISentimentSentenceDto>(),
+                    DateCreated = System.DateTime.Now,
+                    SentimentQueueID = sentimentQueueItem.Id
+                };
+                Decimal num1 = 0M;
+                Decimal num2 = 0M;
                 if (!string.IsNullOrEmpty(sentimentQueueItem.TextForAnalysis))
                 {
-                    Annotation annotation = Pipeline.process(sentimentQueueItem.TextForAnalysis.ToLower());//convert to lower
-
-                    var sentences = annotation.get(typeof(CoreAnnotations.SentencesAnnotation));
-
-                    var arrayList = sentences as ArrayList;
-                    if (arrayList != null)
-                        foreach (Annotation sentence in arrayList)
+                    if (this.Pipeline.process(sentimentQueueItem.TextForAnalysis.ToLower()).get((Class)typeof(CoreAnnotations.SentencesAnnotation)) is java.util.ArrayList arrayList)
+                    {
+                        foreach (Annotation annotation in (IEnumerable)arrayList)
                         {
-                            sentenceSum += 1;
-
-                            CoreMap coreMapping = sentence;
-
-                            var tree = (Tree)coreMapping.get(typeof(SentimentCoreAnnotations.AnnotatedTree));
-
-
-                            var score = RNNCoreAnnotations.getPredictedClass(tree);
-                            scoreSum += score;
-
-                            sentiment.SentimentSentences.Add(new SentimentSentenceDto { Text = sentence.ToString(), Score = score, DateCreated = DateTime.Now });
+                            num1 += 1M;
+                            int predictedClass = RNNCoreAnnotations.getPredictedClass((Tree)annotation.get((Class)typeof(SentimentCoreAnnotations.AnnotatedTree)));
+                            num2 += (Decimal)predictedClass;
+                            sentiment.SentimentSentences.Add((ISentimentSentenceDto)new SentimentSentenceDto()
+                            {
+                                Text = annotation.ToString(),
+                                Score = predictedClass,
+                                DateCreated = System.DateTime.Now
+                            });
                         }
-                    sentiment.AverageScore = scoreSum / sentenceSum; //set average
+                    }
+                    sentiment.AverageScore = new Decimal?(num2 / num1);
                 }
 
                 return sentiment;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                Trace.WriteLine(string.Format("Error analysing sentiment for sentimentId: {0} - error: {1}", sentimentQueueItem.Id, ex.Message));
-                Elmah.ErrorLog.GetDefault(null).Log(new Elmah.Error(ex));
+                Trace.WriteLine(string.Format("Error analysing sentiment for sentimentId: {0} - error: {1}", (object)sentimentQueueItem.Id, (object)ex.Message));
+                ErrorLog.GetDefault((HttpContext)null).Log(new Elmah.Error(ex));
                 throw ex;
             }
         }

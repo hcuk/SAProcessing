@@ -18,13 +18,14 @@
 
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using SAP.DataModel;
 using SAP.Dtos;
 using SAP.Interfaces.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace SAP.DataAccess
 {
@@ -48,18 +49,18 @@ namespace SAP.DataAccess
         /// <returns></returns>
         public static ISentimentBatchDto StartBatch(int batchLimit, int batchSize, DateTime dateStart)//TODO: refactor params to Interface
         {
-            using (var db = new SentimentEntities())
+            using (SentimentEntities sentimentEntities = new SentimentEntities())
             {
-                var newBatch = new sentiment_batch
+                sentiment_batch sentimentBatch = new sentiment_batch()
                 {
                     batch_limit = batchLimit,
                     batch_size = batchSize,
                     date_start = dateStart
                 };
-                db.sentiment_batch.Add(newBatch);
-                db.SaveChanges();
-                ISentimentBatchDto dto = new SentimentBatchDto();
-                return Mapper.Map(newBatch, dto);
+                sentimentEntities.sentiment_batch.Add(sentimentBatch);
+                sentimentEntities.SaveChanges();
+                ISentimentBatchDto destination = (ISentimentBatchDto)new SentimentBatchDto();
+                return Mapper.Map<sentiment_batch, ISentimentBatchDto>(sentimentBatch, destination);
             }
         }
 
@@ -69,27 +70,30 @@ namespace SAP.DataAccess
         /// <param name="sentimentBatch"></param>
         public static void FinishBatch(ISentimentBatchDto sentimentBatch)
         {
-            using (var db = new SentimentEntities())
+            using (SentimentEntities sentimentEntities = new SentimentEntities())
             {
-                db.sentiment_batch.Find(sentimentBatch.Id).date_finish = sentimentBatch.DateFinish;
-                db.SaveChanges();
+                sentimentEntities.sentiment_batch.Find(new object[1]
+                {
+          (object) sentimentBatch.Id
+                }).date_finish = sentimentBatch.DateFinish;
+                sentimentEntities.SaveChanges();
             }
         }
 
-        /// <summary>
-        /// returns a list of sentiment queue items not yet processed at batch size specified
-        /// </summary>
-        /// <param name="batchSize"></param>
-        /// <returns></returns>
-        public static List<ISentimentQueueDto> GetSentimentQueueForProcessing(int batchSize, bool retryFailed =false)
+        public static List<ISentimentQueueDto> GetSentimentQueueForProcessing(
+          int batchSize,
+          bool retryFailed = false)
         {
-            using (var db = new SentimentEntities())
+            using (SentimentEntities sentimentEntities = new SentimentEntities())
             {
-                var queue = new List<sentiment_queue>();
-
-                queue = retryFailed ? db.sentiment_queue.OrderBy(x => x.id).Where(x => x.processed == false || x.error == true).Take(batchSize).ToList() : db.sentiment_queue.OrderBy(x => x.id).Where(x => x.processed == false).Take(batchSize).ToList();
-                var dto = new List<ISentimentQueueDto>();
-                return Mapper.Map(queue, dto);
+                List<sentiment_queue> sentimentQueueList = new List<sentiment_queue>();
+                List<sentiment_queue> list;
+                if (!retryFailed)
+                    list = sentimentEntities.sentiment_queue.OrderBy<sentiment_queue, int>((Expression<Func<sentiment_queue, int>>)(x => x.id)).Where<sentiment_queue>((Expression<Func<sentiment_queue, bool>>)(x => x.processed == false)).Take<sentiment_queue>(batchSize).ToList<sentiment_queue>();
+                else
+                    list = sentimentEntities.sentiment_queue.OrderBy<sentiment_queue, int>((Expression<Func<sentiment_queue, int>>)(x => x.id)).Where<sentiment_queue>((Expression<Func<sentiment_queue, bool>>)(x => x.processed == false || x.error == (bool?)true)).Take<sentiment_queue>(batchSize).ToList<sentiment_queue>();
+                List<ISentimentQueueDto> destination = new List<ISentimentQueueDto>();
+                return Mapper.Map<List<sentiment_queue>, List<ISentimentQueueDto>>(list, destination);
             }
         }
 
@@ -99,17 +103,18 @@ namespace SAP.DataAccess
         /// <param name="sentimentQueue"></param>
         public static void SaveSentimentQueueProcessingOutcome(ISentimentQueueDto sentimentQueue)
         {
-            using (var db = new SentimentEntities())
+            using (SentimentEntities sentimentEntities = new SentimentEntities())
             {
-                var sentimentQueueToUpdate = db.sentiment_queue.Find(sentimentQueue.Id);
-                sentimentQueueToUpdate.batch_id = sentimentQueue.BatchId;
-                sentimentQueueToUpdate.processed = sentimentQueue.Processed;
-                sentimentQueueToUpdate.date_processed = sentimentQueue.DateProcessed;
-                sentimentQueueToUpdate.error = sentimentQueue.Error;
-                sentimentQueueToUpdate.sentiment_queue_error = Mapper.Map(sentimentQueue.SentimentQueueErrors,
-                    new List<sentiment_queue_error>());
-
-                db.SaveChanges();
+                sentiment_queue sentimentQueue1 = sentimentEntities.sentiment_queue.Find(new object[1]
+                {
+          (object) sentimentQueue.Id
+                });
+                sentimentQueue1.batch_id = sentimentQueue.BatchId;
+                sentimentQueue1.processed = sentimentQueue.Processed;
+                sentimentQueue1.date_processed = sentimentQueue.DateProcessed;
+                sentimentQueue1.error = sentimentQueue.Error;
+                sentimentQueue1.sentiment_queue_error = (ICollection<sentiment_queue_error>)Mapper.Map<List<ISentimentQueueErrorDto>, List<sentiment_queue_error>>(sentimentQueue.SentimentQueueErrors, new List<sentiment_queue_error>());
+                sentimentEntities.SaveChanges();
             }
         }       
     }

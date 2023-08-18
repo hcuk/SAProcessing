@@ -6,20 +6,17 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
+using System;
 namespace SAP.DataModel
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class sentiment_sentences
+    public class sentiment_sentences
     {
         public int id { get; set; }
         public int sentiment_id { get; set; }
         public string text { get; set; }
         public int score { get; set; }
-        public System.DateTime date_created { get; set; }
-    
+        public DateTime date_created { get; set; }
+
         public virtual sentiment sentiment { get; set; }
     }
 }

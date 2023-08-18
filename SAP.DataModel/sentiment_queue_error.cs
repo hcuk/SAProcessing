@@ -6,20 +6,17 @@
 //     Manual changes to this file will be overwritten if the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
+using System;
 namespace SAP.DataModel
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class sentiment_queue_error
+    public class sentiment_queue_error
     {
         public int id { get; set; }
         public int sentiment_queue_id { get; set; }
         public string message { get; set; }
         public string stacktrace { get; set; }
-        public System.DateTime date_created { get; set; }
-    
+        public DateTime date_created { get; set; }
+
         public virtual sentiment_queue sentiment_queue { get; set; }
     }
 }

@@ -7,24 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 namespace SAP.DataModel
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class sentiment_batch
+    public class sentiment_batch
     {
-        public sentiment_batch()
-        {
-            this.sentiment_queue = new HashSet<sentiment_queue>();
-        }
-    
+        public sentiment_batch() => this.sentiment_queue = (ICollection<SAP.DataModel.sentiment_queue>)new HashSet<SAP.DataModel.sentiment_queue>();
+
         public int id { get; set; }
         public int batch_limit { get; set; }
         public int batch_size { get; set; }
-        public System.DateTime date_start { get; set; }
-        public Nullable<System.DateTime> date_finish { get; set; }
-    
-        public virtual ICollection<sentiment_queue> sentiment_queue { get; set; }
+
+        public DateTime date_start { get; set; }
+
+        public DateTime? date_finish { get; set; }
+
+        public virtual ICollection<SAP.DataModel.sentiment_queue> sentiment_queue { get; set; }
     }
 }

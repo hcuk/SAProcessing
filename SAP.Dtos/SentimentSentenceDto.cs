@@ -19,7 +19,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using SAP.Interfaces.Dtos;
 
 namespace SAP.Dtos
@@ -31,7 +30,5 @@ namespace SAP.Dtos
         public string Text { get; set; }
         public int Score { get; set; }
         public DateTime DateCreated { get; set; }
-        //public ISentimentDto Sentiment { get; set; }
-        
     }
 }
