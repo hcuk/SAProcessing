@@ -18,9 +18,7 @@ namespace SAP.DataModel
         public int id { get; set; }
         public int batch_limit { get; set; }
         public int batch_size { get; set; }
-
         public DateTime date_start { get; set; }
-
         public DateTime? date_finish { get; set; }
 
         public virtual ICollection<SAP.DataModel.sentiment_queue> sentiment_queue { get; set; }
