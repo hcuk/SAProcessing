@@ -22,7 +22,9 @@ namespace SAP.DataModel
         public int id { get; set; }
         public System.DateTime date_created { get; set; }
         public Nullable<decimal> average_score { get; set; }
+        public int sentiment_queue_id { get; set; }
     
         public virtual ICollection<sentiment_sentences> sentiment_sentences { get; set; }
+        public virtual sentiment_queue sentiment_queue { get; set; }
     }
 }

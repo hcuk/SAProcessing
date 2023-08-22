@@ -17,34 +17,29 @@
     along with HCSentimentAnalysisProcessor.  If not, see <http://www.gnu.org/licenses/>.
 
  */
-
+using SAP.Map;
 using System;
 using System.Diagnostics;
-using System.ServiceProcess;
 using System.Timers;
 using System.Configuration;
 
 namespace SAP.WinSvc
 {
-    partial class SentimentQueueManager : ServiceBase
+    internal class SentimentQueueManager
     {
 
         private static Timer _timer;
 
-        public SentimentQueueManager()
-        {
-            InitializeComponent();
-            Map.Mappings.Setup();
-        }
+        public SentimentQueueManager() => Mappings.Setup();
 
-        protected override void OnStart(string[] args)
+        public void OnStart(string[] args)
         {
             _timer = new Timer { Interval = Convert.ToInt32(ConfigurationManager.AppSettings["timerInterval"]) };
             _timer.Elapsed += ProcessBatch;
             _timer.Start();
         }
 
-        protected override void OnStop()
+        public void OnStop()
         {
             _timer.Stop();
             _timer.Dispose();

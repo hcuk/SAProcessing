@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SAP.Interfaces.Dtos
 {
@@ -10,6 +9,5 @@ namespace SAP.Interfaces.Dtos
         string Text { get; set; }
         int Score { get; set; }
         DateTime DateCreated { get; set; }
-        //ISentimentDto Sentiment { get; set; }
     }
 }

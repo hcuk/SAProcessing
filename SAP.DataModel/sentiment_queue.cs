@@ -17,6 +17,7 @@ namespace SAP.DataModel
         public sentiment_queue()
         {
             this.sentiment_queue_error = new HashSet<sentiment_queue_error>();
+            this.sentiments = new HashSet<sentiment>();
         }
     
         public int id { get; set; }
@@ -29,5 +30,6 @@ namespace SAP.DataModel
     
         public virtual sentiment_batch sentiment_batch { get; set; }
         public virtual ICollection<sentiment_queue_error> sentiment_queue_error { get; set; }
+        public virtual ICollection<sentiment> sentiments { get; set; }
     }
 }

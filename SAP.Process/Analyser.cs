@@ -83,7 +83,12 @@ namespace SAP.Process
         {
             try
             {
-                ISentimentDto sentiment = new SentimentDto {  SentimentSentences = new List<ISentimentSentenceDto>(), DateCreated = DateTime.Now };
+                ISentimentDto sentiment = new SentimentDto()
+                {
+                    SentimentSentences = new List<ISentimentSentenceDto>(),
+                    DateCreated = System.DateTime.Now,
+                    SentimentQueueID = sentimentQueueItem.Id
+                };
                 decimal sentenceSum = 0;
                 decimal scoreSum = 0;
 

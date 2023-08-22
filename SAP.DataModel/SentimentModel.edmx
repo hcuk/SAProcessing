@@ -138,6 +138,7 @@
           <Property Name="error" Type="Boolean" />
           <NavigationProperty Name="sentiment_batch" Relationship="Self.FK_sentiment_queue_batch_id" FromRole="sentiment_queue" ToRole="sentiment_batch" />
           <NavigationProperty Name="sentiment_queue_error" Relationship="Self.FK_sentiment_queue_error_queue_id" FromRole="sentiment_queue" ToRole="sentiment_queue_error" />
+          <NavigationProperty Name="sentiments" Relationship="SentimentDataModel.sentiment_queuesentiment" FromRole="sentiment_queue" ToRole="sentiment" />
         </EntityType>
         <EntityType Name="sentiment_queue_error">
           <Key>
@@ -169,6 +170,8 @@
           <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="average_score" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="sentiment_sentences" Relationship="Self.FK_sentiment_sentences_sentiment_id" FromRole="sentiments" ToRole="sentiment_sentences" />
+          <NavigationProperty Name="sentiment_queue" Relationship="SentimentDataModel.sentiment_queuesentiment" FromRole="sentiment" ToRole="sentiment_queue" />
+          <Property Name="sentiment_queue_id" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_sentiment_queue_batch_id">
           <End Role="sentiment_batch" Type="Self.sentiment_batch" Multiplicity="0..1" />
@@ -224,7 +227,23 @@
             <End Role="sentiments" EntitySet="sentiments" />
             <End Role="sentiment_sentences" EntitySet="sentiment_sentences" />
           </AssociationSet>
+          <AssociationSet Name="sentiment_queuesentiment" Association="SentimentDataModel.sentiment_queuesentiment">
+            <End Role="sentiment_queue" EntitySet="sentiment_queue" />
+            <End Role="sentiment" EntitySet="sentiments" />
+          </AssociationSet>
         </EntityContainer>
+        <Association Name="sentiment_queuesentiment">
+          <End Type="SentimentDataModel.sentiment_queue" Role="sentiment_queue" Multiplicity="1" />
+          <End Type="SentimentDataModel.sentiment" Role="sentiment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sentiment_queue">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sentiment">
+              <PropertyRef Name="sentiment_queue_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -283,6 +302,7 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="date_created" ColumnName="date_created" />
           <ScalarProperty Name="average_score" ColumnName="average_score" />
+          <ScalarProperty Name ="sentiment_queue_id" ColumnName ="sentiment_queue_id"/>
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -5,14 +5,15 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="0801255b8c3b44d28c12afb07fe116d6" Name="Diagram1">
-        <EntityTypeShape EntityType="SentimentDataModel.sentiment_batch" Width="1.5" PointX="7.75" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="SentimentDataModel.sentiment_queue" Width="1.5" PointX="10" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="SentimentDataModel.sentiment_queue_error" Width="1.5" PointX="12.25" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="SentimentDataModel.sentiment_sentences" Width="1.875" PointX="3" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SentimentDataModel.sentiment_batch" Width="1.5" PointX="1.5" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SentimentDataModel.sentiment_queue" Width="1.5" PointX="5.875" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SentimentDataModel.sentiment_queue_error" Width="1.5" PointX="8.125" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SentimentDataModel.sentiment_sentences" Width="1.875" PointX="4.5" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="SentimentDataModel.sentiment" Width="1.5" PointX="0.75" PointY="3.375" IsExpanded="true" />
         <AssociationConnector Association="SentimentDataModel.FK_sentiment_queue_batch_id" ManuallyRouted="false" />
         <AssociationConnector Association="SentimentDataModel.FK_sentiment_queue_error_queue_id" ManuallyRouted="false" />
         <AssociationConnector Association="SentimentDataModel.FK_sentiment_sentences_sentiment_id" ManuallyRouted="false" />
+        <AssociationConnector Association="SentimentDataModel.sentiment_queuesentiment" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

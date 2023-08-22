@@ -97,7 +97,8 @@ GO
 CREATE TABLE [dbo].[sentiments] (
     [id] int IDENTITY(1,1) NOT NULL,
     [date_created] datetime  NOT NULL,
-    [average_score] decimal(18,2)  NULL
+    [average_score] decimal(18,2)  NULL,
+    [sentiment_queue_id] int NULL
 );
 GO
 

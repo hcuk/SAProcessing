@@ -19,37 +19,50 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
-using System.ServiceProcess;
+using Topshelf;
+using Topshelf.ServiceConfigurators;
 
 namespace SAP.WinSvc
 {
-    static class Program
+    internal static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main()
+        private const string ApplicationName = "Sentiment Analysis Processor";
+        private static void Main(string[] args)
         {
-            string logDirectory = Path.Combine(Environment.CurrentDirectory, "logs");
-
-            if(!Directory.Exists(logDirectory)) {
-                Directory.CreateDirectory(logDirectory);
-            }
-
-            System.Diagnostics.Trace.WriteLine("Starting Sentiment Service");
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new SentimentQueueManager(),  
-            };
-            ServiceBase.Run(ServicesToRun);
+            Init();
+            HostFactory.Run(hostConfigurator =>
+            {
+                hostConfigurator.Service<SentimentQueueManager>(serviceConfigurator =>
+                {
+                    serviceConfigurator.ConstructUsing(() => new SentimentQueueManager());
+                    serviceConfigurator.WhenStarted(sentimentQueueManager => sentimentQueueManager.OnStart(args));
+                    serviceConfigurator.WhenStopped(sentimentQueueManager => sentimentQueueManager.OnStop());
+                });
+                hostConfigurator.RunAsLocalSystem();
+                hostConfigurator.SetDescription(ApplicationName);
+                hostConfigurator.SetDisplayName(ApplicationName);
+                hostConfigurator.SetServiceName(ApplicationName);
+            });
         }
 
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void Init()
         {
-            System.Diagnostics.Trace.WriteLine(e.ExceptionObject);
+            string path = Path.Combine(Environment.CurrentDirectory, "logs");
+            if (!Directory.Exists(path))
+            { 
+                Directory.CreateDirectory(path); 
+            }
+            Trace.WriteLine("Starting Sentiment Service");
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+        }
+
+        private static void CurrentDomain_UnhandledException(
+          object sender,
+          UnhandledExceptionEventArgs e)
+        {
+            Trace.WriteLine(e.ExceptionObject);
         }
     }
 }

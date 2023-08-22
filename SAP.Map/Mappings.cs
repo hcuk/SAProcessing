@@ -66,7 +66,8 @@ namespace SAP.Map
                 .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
                 .ForMember(dest => dest.DateCreated, src => src.MapFrom(p => p.date_created))
                 .ForMember(dest => dest.AverageScore, src => src.MapFrom(p => p.average_score))
-                .ForMember(dest => dest.SentimentSentences, src => src.MapFrom(p => p.sentiment_sentences));
+                .ForMember(dest => dest.SentimentSentences, src => src.MapFrom(p => p.sentiment_sentences))
+                .ForMember(dest => dest.SentimentQueueID, src => src.MapFrom(p => p.sentiment_queue_id));
 
             Mapper.CreateMap<sentiment_sentences, ISentimentSentenceDto>()
                 .ForMember(dest => dest.Id, src => src.MapFrom(p => p.id))
@@ -82,7 +83,8 @@ namespace SAP.Map
                 .ForMember(dest => dest.id, src => src.MapFrom(p => p.Id))
                 .ForMember(dest => dest.date_created, src => src.MapFrom(p => p.DateCreated))
                 .ForMember(dest => dest.average_score, src => src.MapFrom(p => p.AverageScore))
-                .ForMember(dest => dest.sentiment_sentences, src => src.MapFrom(p => p.SentimentSentences));
+                .ForMember(dest => dest.sentiment_sentences, src => src.MapFrom(p => p.SentimentSentences))
+                .ForMember(dest => dest.sentiment_queue_id, src => src.MapFrom(p => p.SentimentQueueID));
 
             Mapper.CreateMap<ISentimentSentenceDto, sentiment_sentences>()
                 .ForMember(dest => dest.id, src => src.MapFrom(p => p.Id))
