@@ -4,113 +4,130 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="SentimentDataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-  <EntityContainer Name="SentimentDataModelStoreContainer">
-    <EntitySet Name="sentiment_batch" EntityType="SentimentDataModel.Store.sentiment_batch" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="sentiment_queue" EntityType="SentimentDataModel.Store.sentiment_queue" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="sentiment_queue_error" EntityType="SentimentDataModel.Store.sentiment_queue_error" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="sentiment_sentences" EntityType="SentimentDataModel.Store.sentiment_sentences" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="sentiments" EntityType="SentimentDataModel.Store.sentiments" store:Type="Tables" Schema="dbo" />
-    <AssociationSet Name="FK_sentiment_queue_batch_id" Association="SentimentDataModel.Store.FK_sentiment_queue_batch_id">
-      <End Role="sentiment_batch" EntitySet="sentiment_batch" />
-      <End Role="sentiment_queue" EntitySet="sentiment_queue" />
-    </AssociationSet>
-    <AssociationSet Name="FK_sentiment_queue_error_queue_id" Association="SentimentDataModel.Store.FK_sentiment_queue_error_queue_id">
-      <End Role="sentiment_queue" EntitySet="sentiment_queue" />
-      <End Role="sentiment_queue_error" EntitySet="sentiment_queue_error" />
-    </AssociationSet>
-    <AssociationSet Name="FK_sentiment_sentences_sentiment_id" Association="SentimentDataModel.Store.FK_sentiment_sentences_sentiment_id">
-      <End Role="sentiments" EntitySet="sentiments" />
-      <End Role="sentiment_sentences" EntitySet="sentiment_sentences" />
-    </AssociationSet>
-  </EntityContainer>
-  <EntityType Name="sentiment_batch">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="batch_limit" Type="int" Nullable="false" />
-    <Property Name="batch_size" Type="int" Nullable="false" />
-    <Property Name="date_start" Type="datetime" Nullable="false" />
-    <Property Name="date_finish" Type="datetime" Nullable="true" />
-  </EntityType>
-  <EntityType Name="sentiment_queue">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="text_for_analysis" Type="nvarchar" Nullable="false" MaxLength="612" />
-    <Property Name="date_created" Type="datetime" Nullable="true" />
-    <Property Name="batch_id" Type="int" Nullable="true" />
-    <Property Name="processed" Type="bit" Nullable="false" />
-    <Property Name="date_processed" Type="datetime" Nullable="true" />
-    <Property Name="error" Type="bit" Nullable="true" />
-  </EntityType>
-  <EntityType Name="sentiment_queue_error">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="sentiment_queue_id" Type="int" Nullable="false" />
-    <Property Name="message" Type="nvarchar" Nullable="false" MaxLength="500" />
-    <Property Name="stacktrace" Type="nvarchar" Nullable="true" MaxLength="4000" />
-    <Property Name="date_created" Type="datetime" Nullable="false" />
-  </EntityType>
-  <EntityType Name="sentiment_sentences">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="sentiment_id" Type="int" Nullable="false" />
-    <Property Name="text" Type="nvarchar" Nullable="true" MaxLength="612" />
-    <Property Name="score" Type="int" Nullable="false" />
-    <Property Name="date_created" Type="datetime" Nullable="false" />
-  </EntityType>
-  <EntityType Name="sentiments">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="date_created" Type="datetime" Nullable="false" />
-    <Property Name="average_score" Type="decimal" Nullable="true" Precision="18" Scale="2" />
-  </EntityType>
-  <Association Name="FK_sentiment_queue_batch_id">
-    <End Role="sentiment_batch" Type="SentimentDataModel.Store.sentiment_batch" Multiplicity="0..1" />
-    <End Role="sentiment_queue" Type="SentimentDataModel.Store.sentiment_queue" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="sentiment_batch">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="sentiment_queue">
-        <PropertyRef Name="batch_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_sentiment_queue_error_queue_id">
-    <End Role="sentiment_queue" Type="SentimentDataModel.Store.sentiment_queue" Multiplicity="1" />
-    <End Role="sentiment_queue_error" Type="SentimentDataModel.Store.sentiment_queue_error" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="sentiment_queue">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="sentiment_queue_error">
-        <PropertyRef Name="sentiment_queue_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_sentiment_sentences_sentiment_id">
-    <End Role="sentiments" Type="SentimentDataModel.Store.sentiments" Multiplicity="1" />
-    <End Role="sentiment_sentences" Type="SentimentDataModel.Store.sentiment_sentences" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="sentiments">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="sentiment_sentences">
-        <PropertyRef Name="sentiment_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-</Schema></edmx:StorageModels>
+    <Schema Namespace="SentimentDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sentiment_batch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="batch_limit" Type="int" Nullable="false" />
+          <Property Name="batch_size" Type="int" Nullable="false" />
+          <Property Name="date_start" Type="datetime" Nullable="false" />
+          <Property Name="date_finish" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sentiment_queue">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="text_for_analysis" Type="nvarchar" MaxLength="612" Nullable="false" />
+          <Property Name="date_created" Type="datetime" />
+          <Property Name="batch_id" Type="int" />
+          <Property Name="processed" Type="bit" Nullable="false" />
+          <Property Name="date_processed" Type="datetime" />
+          <Property Name="error" Type="bit" />
+        </EntityType>
+        <EntityType Name="sentiment_queue_error">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sentiment_queue_id" Type="int" Nullable="false" />
+          <Property Name="message" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="stacktrace" Type="nvarchar" MaxLength="4000" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sentiment_sentences">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sentiment_id" Type="int" Nullable="false" />
+          <Property Name="text" Type="nvarchar" MaxLength="612" />
+          <Property Name="score" Type="int" Nullable="false" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sentiments">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="date_created" Type="datetime" Nullable="false" />
+          <Property Name="average_score" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="sentiment_queue_id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_sentiment_queue_batch_id">
+          <End Role="sentiment_batch" Type="Self.sentiment_batch" Multiplicity="0..1" />
+          <End Role="sentiment_queue" Type="Self.sentiment_queue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sentiment_batch">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sentiment_queue">
+              <PropertyRef Name="batch_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sentiment_queue_error_queue_id">
+          <End Role="sentiment_queue" Type="Self.sentiment_queue" Multiplicity="1" />
+          <End Role="sentiment_queue_error" Type="Self.sentiment_queue_error" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sentiment_queue">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sentiment_queue_error">
+              <PropertyRef Name="sentiment_queue_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sentiment_sentences_sentiment_id">
+          <End Role="sentiments" Type="Self.sentiments" Multiplicity="1" />
+          <End Role="sentiment_sentences" Type="Self.sentiment_sentences" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sentiments">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sentiment_sentences">
+              <PropertyRef Name="sentiment_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sentiments_ToQueue">
+          <End Role="sentiment_queue" Type="Self.sentiment_queue" Multiplicity="1" />
+          <End Role="sentiments" Type="Self.sentiments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sentiment_queue">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sentiments">
+              <PropertyRef Name="sentiment_queue_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SentimentDataModelStoreContainer">
+          <EntitySet Name="sentiment_batch" EntityType="Self.sentiment_batch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sentiment_queue" EntityType="Self.sentiment_queue" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sentiment_queue_error" EntityType="Self.sentiment_queue_error" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sentiment_sentences" EntityType="Self.sentiment_sentences" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sentiments" EntityType="Self.sentiments" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_sentiment_queue_batch_id" Association="Self.FK_sentiment_queue_batch_id">
+            <End Role="sentiment_batch" EntitySet="sentiment_batch" />
+            <End Role="sentiment_queue" EntitySet="sentiment_queue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sentiment_queue_error_queue_id" Association="Self.FK_sentiment_queue_error_queue_id">
+            <End Role="sentiment_queue" EntitySet="sentiment_queue" />
+            <End Role="sentiment_queue_error" EntitySet="sentiment_queue_error" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sentiment_sentences_sentiment_id" Association="Self.FK_sentiment_sentences_sentiment_id">
+            <End Role="sentiments" EntitySet="sentiments" />
+            <End Role="sentiment_sentences" EntitySet="sentiment_sentences" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sentiments_ToQueue" Association="Self.FK_sentiments_ToQueue">
+            <End Role="sentiment_queue" EntitySet="sentiment_queue" />
+            <End Role="sentiments" EntitySet="sentiments" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SentimentDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -138,7 +155,7 @@
           <Property Name="error" Type="Boolean" />
           <NavigationProperty Name="sentiment_batch" Relationship="Self.FK_sentiment_queue_batch_id" FromRole="sentiment_queue" ToRole="sentiment_batch" />
           <NavigationProperty Name="sentiment_queue_error" Relationship="Self.FK_sentiment_queue_error_queue_id" FromRole="sentiment_queue" ToRole="sentiment_queue_error" />
-          <NavigationProperty Name="sentiments" Relationship="SentimentDataModel.sentiment_queuesentiment" FromRole="sentiment_queue" ToRole="sentiment" />
+          <NavigationProperty Name="sentiments" Relationship="SentimentDataModel.FK_sentiments_ToQueue" FromRole="sentiment_queue" ToRole="sentiment" />
         </EntityType>
         <EntityType Name="sentiment_queue_error">
           <Key>
@@ -160,18 +177,7 @@
           <Property Name="text" Type="String" MaxLength="612" FixedLength="false" Unicode="true" />
           <Property Name="score" Type="Int32" Nullable="false" />
           <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="sentiment" Relationship="Self.FK_sentiment_sentences_sentiment_id" FromRole="sentiment_sentences" ToRole="sentiments" />
-        </EntityType>
-        <EntityType Name="sentiment">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="average_score" Type="Decimal" Precision="18" Scale="2" />
-          <NavigationProperty Name="sentiment_sentences" Relationship="Self.FK_sentiment_sentences_sentiment_id" FromRole="sentiments" ToRole="sentiment_sentences" />
-          <NavigationProperty Name="sentiment_queue" Relationship="SentimentDataModel.sentiment_queuesentiment" FromRole="sentiment" ToRole="sentiment_queue" />
-          <Property Name="sentiment_queue_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="sentiment" Relationship="SentimentDataModel.FK_sentiment_sentences_sentiment_id" FromRole="sentiment_sentences" ToRole="sentiment" />
         </EntityType>
         <Association Name="FK_sentiment_queue_batch_id">
           <End Role="sentiment_batch" Type="Self.sentiment_batch" Multiplicity="0..1" />
@@ -197,24 +203,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_sentiment_sentences_sentiment_id">
-          <End Role="sentiments" Type="Self.sentiment" Multiplicity="1" />
-          <End Role="sentiment_sentences" Type="Self.sentiment_sentences" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="sentiments">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="sentiment_sentences">
-              <PropertyRef Name="sentiment_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="SentimentEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="sentiment_batch" EntityType="Self.sentiment_batch" />
           <EntitySet Name="sentiment_queue" EntityType="Self.sentiment_queue" />
           <EntitySet Name="sentiment_queue_error" EntityType="Self.sentiment_queue_error" />
           <EntitySet Name="sentiment_sentences" EntityType="Self.sentiment_sentences" />
-          <EntitySet Name="sentiments" EntityType="Self.sentiment" />
           <AssociationSet Name="FK_sentiment_queue_batch_id" Association="Self.FK_sentiment_queue_batch_id">
             <End Role="sentiment_batch" EntitySet="sentiment_batch" />
             <End Role="sentiment_queue" EntitySet="sentiment_queue" />
@@ -223,16 +216,28 @@
             <End Role="sentiment_queue" EntitySet="sentiment_queue" />
             <End Role="sentiment_queue_error" EntitySet="sentiment_queue_error" />
           </AssociationSet>
-          <AssociationSet Name="FK_sentiment_sentences_sentiment_id" Association="Self.FK_sentiment_sentences_sentiment_id">
-            <End Role="sentiments" EntitySet="sentiments" />
-            <End Role="sentiment_sentences" EntitySet="sentiment_sentences" />
-          </AssociationSet>
-          <AssociationSet Name="sentiment_queuesentiment" Association="SentimentDataModel.sentiment_queuesentiment">
+          <EntitySet Name="sentiments" EntityType="SentimentDataModel.sentiment" />
+          <AssociationSet Name="FK_sentiments_ToQueue" Association="SentimentDataModel.FK_sentiments_ToQueue">
             <End Role="sentiment_queue" EntitySet="sentiment_queue" />
             <End Role="sentiment" EntitySet="sentiments" />
           </AssociationSet>
-        </EntityContainer>
-        <Association Name="sentiment_queuesentiment">
+          <AssociationSet Name="FK_sentiment_sentences_sentiment_id" Association="SentimentDataModel.FK_sentiment_sentences_sentiment_id">
+            <End Role="sentiment" EntitySet="sentiments" />
+            <End Role="sentiment_sentences" EntitySet="sentiment_sentences" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="sentiment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="date_created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="average_score" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="sentiment_queue_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="sentiment_queue" Relationship="SentimentDataModel.FK_sentiments_ToQueue" FromRole="sentiment" ToRole="sentiment_queue" />
+          <NavigationProperty Name="sentiment_sentences" Relationship="SentimentDataModel.FK_sentiment_sentences_sentiment_id" FromRole="sentiment" ToRole="sentiment_sentences" />
+        </EntityType>
+        <Association Name="FK_sentiments_ToQueue">
           <End Type="SentimentDataModel.sentiment_queue" Role="sentiment_queue" Multiplicity="1" />
           <End Type="SentimentDataModel.sentiment" Role="sentiment" Multiplicity="*" />
           <ReferentialConstraint>
@@ -241,6 +246,18 @@
             </Principal>
             <Dependent Role="sentiment">
               <PropertyRef Name="sentiment_queue_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sentiment_sentences_sentiment_id">
+          <End Type="SentimentDataModel.sentiment" Role="sentiment" Multiplicity="1" />
+          <End Type="SentimentDataModel.sentiment_sentences" Role="sentiment_sentences" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sentiment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="sentiment_sentences">
+              <PropertyRef Name="sentiment_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -296,16 +313,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="sentiments">
-      <EntityTypeMapping TypeName="IsTypeOf(SentimentDataModel.sentiment)">
-        <MappingFragment StoreEntitySet="sentiments">
-          <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="date_created" ColumnName="date_created" />
-          <ScalarProperty Name="average_score" ColumnName="average_score" />
-          <ScalarProperty Name ="sentiment_queue_id" ColumnName ="sentiment_queue_id"/>
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
+          <EntitySetMapping Name="sentiments">
+            <EntityTypeMapping TypeName="SentimentDataModel.sentiment">
+              <MappingFragment StoreEntitySet="sentiments">
+                <ScalarProperty Name="sentiment_queue_id" ColumnName="sentiment_queue_id" />
+                <ScalarProperty Name="average_score" ColumnName="average_score" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

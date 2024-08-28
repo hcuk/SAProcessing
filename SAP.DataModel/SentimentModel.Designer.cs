@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\GIT Repos\envoy-messenger\SentimentAnalysis - Open Source\ESA.DataModel\SentimentModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Repositories\SAProcessing\SAP.DataModel\SentimentModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
