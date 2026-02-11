@@ -106,7 +106,7 @@ namespace SAP.Process
 
                             CoreMap coreMapping = sentence;
 
-                            var tree = (Tree)coreMapping.get(typeof(SentimentCoreAnnotations.AnnotatedTree));
+                            var tree = (Tree)coreMapping.get(typeof(SentimentCoreAnnotations.SentimentAnnotatedTree));
 
 
                             var score = RNNCoreAnnotations.getPredictedClass(tree);
